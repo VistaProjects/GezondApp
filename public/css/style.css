@@ -1,0 +1,37 @@
+body {
+	/* background: rgb(18 20 22); */
+}
+.navbar {
+	/* background: rgb(197, 197, 197) !important; */
+}
+
+.card {
+	background: rgb(196, 196, 196) !important;
+}
+
+#box {
+	height: 500px;
+	width: 750px;
+}
+
+.gloweffect {
+	/* text-shadow: 0 0 2.5px; */
+	/* use animiation gloweffect */
+	animation: gloweffect 1s infinite;
+	color: green;
+}
+
+@keyframes gloweffect{
+	0%{
+		text-shadow: 0 0 0px
+	}
+	25%{
+		text-shadow: 0 0 3.5px
+	}
+	50%{
+		text-shadow: 0 0 3.5px
+	}
+	100%{
+		text-shadow: 0 0 0px
+	}
+}

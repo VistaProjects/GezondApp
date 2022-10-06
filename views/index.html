@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<%- include('header.html') %>
+	<title><%= process.env.SITE_NAME %> - Home</title>
+</head>
+<body>
+	<section class="vh-100 gradient-custom">
+		<div class="container py-5 h-100">
+			<div class="row d-flex justify-content-center align-items-center h-100">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<div class="card bg-dark text-white" style="border-radius: 5px;">
+						<div class="card-body p-5 text-center">
+							<div class="mb-md-5 mt-md-4 pb-5">
+								<h2 class="fw-bold mb-2 text-uppercase btn-shine" style="text-shadow: 0 0 2.5px">
+									<%= process.env.SITE_NAME %>
+								</h2>
+
+								<p class="text-white-50 mb-3">Enter your login and password!</p>
+
+								<div class="form-outline form-white mb-4">
+									<input type="text" id="username" class="form-control form-control-lg" placeholder="Username" />
+								</div>
+
+								<div class="form-outline form-white mb-4">
+									<input type="password" id="password" class="form-control form-control-lg" placeholder="Password"/>
+								</div>
+								
+								
+								<button id="login" class="btn btn-outline-light btn-lg px-15" type="submit">Login</button>
+							</div>
+
+							<div>
+								<p class="mb-4">Don't have an account? <a href="/register" class="text-white-50 fw-bold">Register</a></p>
+							</div>
+
+							<div id="alert">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script>
+		$(document).ready(function() {
+
+			function login(){
+				$.post('/user/login', {
+					username: $('#username').val(),
+					password: $('#password').val(),
+				}, function(data) {
+					if (data.success){
+						$("#alert").html(`<div class="alert alert-success" role="alert">${data.message}</div>`)
+						setInterval(function(){
+							window.location.replace("/dashboard");
+						}, 1000)
+					}
+					else
+					{
+						$("#alert").html(`<div class="alert alert-danger" role="alert">${data.message}</div>`)
+					}
+				})
+			}
+
+			$('#login').click(function(){login()});
+
+			$(document).on('keypress',function(e) {
+				if(e.which == 13) login()
+			});
+		});
+	</script>
+</body>
+
+</html>

@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-
+const https = require('follow-redirects').https;
 const User = require('./routes/user/user.model');
+const cheerio = require("cheerio");
 
 app.engine('html', require('ejs').renderFile);
 app.use(express.urlencoded({ extended: true }));
@@ -41,10 +42,50 @@ app.get('/dashboard', require('./middleware/jwt.middleware'), (req, res) => {
 	const username = req.userData.username
 	User.findOne({username}).then(json=>{
 		res.render('dashboard.html',  {
-			username: username
+			username: username,
+			eetschema: json.eetschema,
 		})
 	})
 });
+
+app.get("/ean/:ean", (req, res) => {
+	const ean = req.params.ean
+
+	const options = {
+		hostname: 'world-zh.openfoodfacts.org',
+		port: 443,
+		path: '/api/v0/product/' + ean + '.json',
+		method: 'GET',
+		headers: {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
+		}
+	}
+	
+	const request = https.request(options, response => {
+		let data = '';
+	
+		response.on('data', (chunk) => {
+			data += chunk;
+		});
+	
+		response.on('end', () => {
+			var json = JSON.parse(data);
+
+			var products = json.product.nutriments
+
+			products.image = json.product.image_url
+			res.send(products)
+		});
+	})
+	
+	request.on('error', error => {
+		console.error(error)
+	})
+	
+	request.end()
+
+})
+
 
 fs.readdirSync('./routes').forEach(file => {
     app.use(`/${file}/`, require(`./routes/${file}/${file}.controller`));

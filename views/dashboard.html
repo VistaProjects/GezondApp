@@ -10,5 +10,69 @@
 	<%- include('navbar.html') %>
 	<h1 style="text-align: center;">Welcome <%= username %>!</h1>
 
+	<div id="box">
+		<canvas id="myChart" width="40" height="40"></canvas>
+	</div>
+	
+	
+	<script>
+
+		const eiwitten = [<%= eetschema.eiwitten %>]
+		const proteinen = [<%= eetschema.proteinen %>]
+		const koolhydraten = [<%= eetschema.koolhydraten %>]
+		const vet = [<%= eetschema.vet %>]
+	
+
+
+		const labels = [
+			'Maandag',
+			'Dinsdag',
+			'Woensdag',
+			'Donderdag',
+			'Vrijdag',
+			'Zaterdag',
+			'Zondag'
+		];
+	
+		const data = {
+			labels: labels,
+			datasets: [{
+					label: 'Eiwitten',
+					backgroundColor: 'rgb(255, 0, 255)',
+					borderColor: 'rgb(255, 0, 255)',
+					data: eiwitten,
+				}, {
+					label: 'Proteïnen',
+					backgroundColor: 'rgb(255, 255, 132)',
+					borderColor: 'rgb(255, 255, 132)',
+					data: proteinen,
+				},
+				{
+					label: 'Koolhydraten',
+					backgroundColor: 'rgb(255, 0, 0)',
+					borderColor: 'rgb(255, 0, 0)',
+					data: koolhydraten,
+				},
+				{
+					label: 'Vet',
+					backgroundColor: 'rgb(1, 255, 0)',
+					borderColor: 'rgb(1, 255, 0)',
+					data: vet,
+				}
+			]
+		};
+	
+		const config = {
+			type: 'line',
+			data: data,
+			options: {}
+		};
+	
+		const ctx = document.getElementById('myChart').getContext('2d');
+		const myChart = new Chart(ctx, config);
+	</script>
+	
+
+
 </body>
 </html>

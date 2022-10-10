@@ -4,6 +4,33 @@ const User = require('./user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+//const updateUser = async (req, res) => {
+//    const { username, array, dag } = req.body;
+//	const usernameExists = await User.findOne({ username });
+//    
+//    if (usernameExists) {
+//		switch (dag) {
+//			case 0: // Maandag
+//
+//				User.updateOne(
+//					{schema : {"eiwitten.1" : "4"}}
+//				)
+//
+//				User.updateOne({ 
+//					schema: {
+//						eiwitten: array[0],
+//						proteinen: array[1],
+//						koolhydraten: array[2],
+//						vet: array[3],
+//					}
+//				})
+//				break;
+//	
+//		}
+//    }
+//}
+
+
 const registerUser = async (req, res) => {
     const { username, password, invite } = req.body;
 
@@ -80,6 +107,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
+	
     if (!username || !password) {
         return res.status(200).json({
             success: false,
@@ -89,7 +117,29 @@ const loginUser = async (req, res) => {
 
     const DB_USER = await User.findOne({ username });
 
+	//{
+	//	eetschema: {
+	//	  eiwitten: [
+	//		0, 0, 40, 0,
+	//		4, 1,  4
+	//	  ]
+	//	}
+	//}
 
+
+	//DB_USER.updateOne({
+	//	$set: {  
+	//		'eetschema': [1,2,3]
+	//	}
+	//})
+    // eetschema: { type: Object, required: true, default: {
+	// 	eiwitten: [0,0,0,0,0,0,0],
+	// 	proteinen: [0,0,0,0,0,0,0],
+	// 	koolhydraten: [0,0,0,0,0,0,0],
+	// 	vet: [0,0,0,0,0,0,0],
+	// } },
+
+	console.log('updating user')	
 	if (!DB_USER) {
 		return res.status(200).json({
 			success: false,

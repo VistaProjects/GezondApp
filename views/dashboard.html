@@ -8,71 +8,150 @@
 
 <body>
 	<%- include('navbar.html') %>
-	<h1 style="text-align: center;">Welcome <%= username %>!</h1>
+	<h1 style="text-align: center;">Welkom <%= username %>!</h1>
+	<br>
 
-	<div id="box">
-		<canvas id="myChart" width="40" height="40"></canvas>
+	<div class="containers">
+		<div class="collum">
+			<!-- <div id="box"> -->
+				<canvas id="myChart" width="40" height="40"></canvas>
+			<!-- </div> -->
+		</div>
+		<div class="collum box">
+			<form>
+				<div class="form-group">
+					<label for="dag">Selecteer dag</label>
+					<select class="form-control" id="dag">
+						<option>Maandag</option>
+						<option>Dinsdag</option>
+						<option>Woensdag</option>
+						<option>Donderdag</option>
+						<option>Vrijdag</option>
+						<option>Zaterdag</option>
+						<option>Zondag</option>
+					</select>
+					
+					<br>
+
+					<label for="Eiwitten">Eiwitten</label>
+					<input id="Eiwitten" type="Number" class="form-control" placeholder="0">
+					
+					<label for="Proteïnen">Proteïnen</label>
+					<input id="Proteinen" type="Number" class="form-control" placeholder="0">
+					
+					<label for="Koolhydraten">Koolhydraten</label>
+					<input id="Koolhydraten" type="Number" class="form-control" placeholder="0">
+
+					<label for="Vet">Vet</label>
+					<input id="Vet" type="Number" class="form-control" placeholder="0">
+				</div>
+				<!-- <br> -->
+				<!-- <button type="button" class="btn btn-primary">Update</button> -->
+			  </form>
+		</div>  
 	</div>
-	
-	
+
 	<script>
 
-		const eiwitten = [<%= eetschema.eiwitten %>]
-		const proteinen = [<%= eetschema.proteinen %>]
-		const koolhydraten = [<%= eetschema.koolhydraten %>]
-		const vet = [<%= eetschema.vet %>]
-	
+		var eiwitten = [<%= eiwitten %>]
+		var proteinen = [<%= proteinen %>]
+		var koolhydraten = [<%= koolhydraten %>]
+		var vet = [<%= vet %>]
 
+		let soorten = [
+			"eiwitten",
+			"proteinen",
+			"koolhydraten",
+			"vet"
+		]
 
-		const labels = [
-			'Maandag',
-			'Dinsdag',
-			'Woensdag',
-			'Donderdag',
-			'Vrijdag',
-			'Zaterdag',
-			'Zondag'
-		];
-	
-		const data = {
-			labels: labels,
-			datasets: [{
-					label: 'Eiwitten',
-					backgroundColor: 'rgb(255, 0, 255)',
-					borderColor: 'rgb(255, 0, 255)',
-					data: eiwitten,
-				}, {
-					label: 'Proteïnen',
-					backgroundColor: 'rgb(255, 255, 132)',
-					borderColor: 'rgb(255, 255, 132)',
-					data: proteinen,
-				},
-				{
-					label: 'Koolhydraten',
-					backgroundColor: 'rgb(255, 0, 0)',
-					borderColor: 'rgb(255, 0, 0)',
-					data: koolhydraten,
-				},
-				{
-					label: 'Vet',
-					backgroundColor: 'rgb(1, 255, 0)',
-					borderColor: 'rgb(1, 255, 0)',
-					data: vet,
-				}
+		let days = {
+			"Maandag": 0,
+			"Dinsdag": 1,
+			"Woensdag": 2,
+			"Donderdag": 3,
+			"Vrijdag": 4,
+			"Zaterdag": 5,
+			"Zondag": 6
+		}
+
+		var data = {
+			labels: Object.entries(days).map(day => day[0]),
+			datasets: [
+				{ label: 'Eiwitten', backgroundColor: 'rgb(255, 0, 255)', borderColor: 'rgb(255, 0, 255)', data: eiwitten }, 
+				{ label: 'Proteïnen', backgroundColor: 'rgb(255, 255, 132)', borderColor: 'rgb(255, 255, 132)', data: proteinen },
+				{ label: 'Koolhydraten', backgroundColor: 'rgb(255, 0, 0)', borderColor: 'rgb(255, 0, 0)', data: koolhydraten},
+				{ label: 'Vet', backgroundColor: 'rgb(1, 255, 0)', borderColor: 'rgb(1, 255, 0)', data: vet}
 			]
 		};
 	
 		const config = {
 			type: 'line',
 			data: data,
-			options: {}
+			options: {
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'Voedingswaarden'
+					}
+				}
+			},
 		};
-	
 		const ctx = document.getElementById('myChart').getContext('2d');
 		const myChart = new Chart(ctx, config);
+
+
+		function SetValue(number) {
+			$("#Eiwitten").val(eiwitten[number]);
+			$("#Proteinen").val(proteinen[number]);
+			$("#Koolhydraten").val(koolhydraten[number]);
+			$("#Vet").val(vet[number]);
+		}
+		SetValue(0)
+
+		function updateServer(soort, array) {
+			console.log(soort, array)
+			$.ajax({
+				url: '/user/update',
+				type: 'POST',
+				data: {
+					"username": "<%= username %>",
+					"soort": soort,
+					"array": array
+				},
+				success: function (data) {
+					console.log(data)
+				}
+			});
+		}
+
+		$('input').on('input', function() {
+			let values = [
+				$("#Eiwitten").val(),
+				$("#Proteinen").val(),
+				$("#Koolhydraten").val(),
+				$("#Vet").val()
+			]
+
+			let number = days[$("#dag").val()]
+
+			for (let i = 0; i < 4; i++) {
+				data.datasets[i].data[number] =	Number(values[i]);
+
+				if ($(this).attr('id').toLowerCase() == soorten[i]) {
+					updateServer(soorten[i], data.datasets[i].data)
+				}
+			}
+			myChart.update();
+		});
+
+		$("#dag").click(function(){
+			SetValue(Object.keys(days).indexOf(this.value))
+		});
 	</script>
-	
-
-
 </body>
 </html>

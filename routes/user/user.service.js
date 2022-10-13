@@ -1,54 +1,16 @@
-const Invite = require('../invite/invite.model');
 const User = require('./user.model');
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//const updateUser = async (req, res) => {
-//    const { username, array, dag } = req.body;
-//	const usernameExists = await User.findOne({ username });
-//    
-//    if (usernameExists) {
-//		switch (dag) {
-//			case 0: // Maandag
-//
-//				User.updateOne(
-//					{schema : {"eiwitten.1" : "4"}}
-//				)
-//
-//				User.updateOne({ 
-//					schema: {
-//						eiwitten: array[0],
-//						proteinen: array[1],
-//						koolhydraten: array[2],
-//						vet: array[3],
-//					}
-//				})
-//				break;
-//	
-//		}
-//    }
-//}
-
 
 const registerUser = async (req, res) => {
-    const { username, password, invite } = req.body;
-
+    const { username, password } = req.body;
 
     if (!username || !password) {
-		if (process.env.INVITE_ONLY && !invite){
-			return res.status(200).json({
-				success: false,
-				message: 'Missing invite'
-			});
-		}
-		else
-		{
-			return res.status(200).json({
-				success: false,
-				message: 'Missing required fields'
-			});
-		}
+		return res.status(200).json({
+			success: false,
+			message: 'Missing required fields'
+		});
     }
 
     const usernameExists = await User.findOne({ username });
@@ -74,15 +36,6 @@ const registerUser = async (req, res) => {
         });
     }
 
-    const DB_INVITE = await Invite.findOne({ code: invite });
-
-    if (!DB_INVITE && process.env.INVITE_ONLY == "true") {
-        return res.status(200).json({
-            success: false,
-            message: 'Invalid invite code'
-        });
-    }
-	
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -92,17 +45,46 @@ const registerUser = async (req, res) => {
 
     await newUser.save();
 
-
-	if (process.env.INVITE_ONLY == "true" || DB_INVITE) {
-		await Invite.findByIdAndRemove(DB_INVITE._id);
-	}
-    
-
     return res.status(200).json({
         success: true,
         message: 'User created successfully',
     });
 }
+
+const updateUser = async (req, res) => {
+	const { username, soort, array } = req.body;
+
+	if (!username || !soort || !array) {
+        return res.status(200).json({
+            success: false,
+            message: 'Missing required fields'
+        });
+    }
+
+    const DB_USER = await User.findOne({ username });
+
+	if (!DB_USER) {
+		return res.status(200).json({
+			success: false,
+			message: 'User not found'
+		});
+	}
+	
+
+	var object = { [`${soort}`]: array }
+	
+	User.findByIdAndUpdate(DB_USER._id, { "$set": object },
+		function (err, test) {
+			if (err) throw err;
+
+			return res.status(200).json({
+				success: true,
+				message: `Updated ${soort} successfully`,
+			});
+		}
+	);
+}
+
 
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -117,29 +99,6 @@ const loginUser = async (req, res) => {
 
     const DB_USER = await User.findOne({ username });
 
-	//{
-	//	eetschema: {
-	//	  eiwitten: [
-	//		0, 0, 40, 0,
-	//		4, 1,  4
-	//	  ]
-	//	}
-	//}
-
-
-	//DB_USER.updateOne({
-	//	$set: {  
-	//		'eetschema': [1,2,3]
-	//	}
-	//})
-    // eetschema: { type: Object, required: true, default: {
-	// 	eiwitten: [0,0,0,0,0,0,0],
-	// 	proteinen: [0,0,0,0,0,0,0],
-	// 	koolhydraten: [0,0,0,0,0,0,0],
-	// 	vet: [0,0,0,0,0,0,0],
-	// } },
-
-	console.log('updating user')	
 	if (!DB_USER) {
 		return res.status(200).json({
 			success: false,
@@ -181,4 +140,5 @@ const loginUser = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
+	updateUser,
 };

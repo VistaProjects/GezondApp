@@ -1,2 +1,0 @@
-# GezondApp
-hoi

@@ -6,9 +6,8 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const https = require('follow-redirects').https;
+const https = require('https')
 const User = require('./routes/user/user.model');
-const cheerio = require("cheerio");
 
 app.engine('html', require('ejs').renderFile);
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +42,10 @@ app.get('/dashboard', require('./middleware/jwt.middleware'), (req, res) => {
 	User.findOne({username}).then(json=>{
 		res.render('dashboard.html',  {
 			username: username,
-			eetschema: json.eetschema,
+			vet: json.vet,
+			proteinen: json.proteinen,
+			koolhydraten: json.koolhydraten,
+			eiwitten: json.eiwitten,
 		})
 	})
 });

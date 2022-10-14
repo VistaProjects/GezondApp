@@ -1,5 +1,6 @@
 body {
 	/* background: rgb(18 20 22); */
+	--bs-dark-rgb: white;
 }
 
 .navbar {
@@ -10,29 +11,16 @@ body {
 	background: rgb(196, 196, 196) !important;
 }
 
-.gloweffect {
-	/* text-shadow: 0 0 2.5px; */
-	/* use animiation gloweffect */
-	animation: gloweffect 1s infinite;
-	color: green;
+.card-body {
+	background: rgb(215, 215, 215);
 }
 
-@keyframes gloweffect {
-	0% {
-		text-shadow: 0 0 0px
-	}
+.bg-dark {
+	background-color: white !important;
+}
 
-	25% {
-		text-shadow: 0 0 3.5px
-	}
-
-	50% {
-		text-shadow: 0 0 3.5px
-	}
-
-	100% {
-		text-shadow: 0 0 0px
-	}
+.black {
+	color: black;
 }
 
 .containers {
@@ -43,6 +31,12 @@ body {
 	flex: 1;
 	height: 100%;
 }
+
+.form-group {
+	width: 25vw
+}
+
+
 
 @media (max-width: 992px) {
 	.containers:nth-child(2) {

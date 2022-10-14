@@ -21,24 +21,24 @@
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-center h-100">
 				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-					<div class="card bg-dark text-white" style="border-radius: 5px;">
+					<div class="card bg-dark text-black" style="border-radius: 5px;">
 						<div class="card-body p-5 text-center">
 							<div class="mb-md-5 mt-md-4 pb-5">
 								<h2 class="fw-bold mb-2 text-uppercase btn-shine" style="text-shadow: 0 0 2.5px">
 									<%= process.env.SITE_NAME %>
 								</h2>
 
-								<p class="text-white-50 mb-3">Create your account!</p>
+								<p class="text-black-50 mb-3">Create your account!</p>
 
-								<div class="form-outline form-white mb-4">
+								<div class="form-outline form-black mb-4">
 									<input type="text" id="username" class="form-control form-control-lg" placeholder="Username" />
 								</div>
 
-								<div class="form-outline form-white mb-4">
+								<div class="form-outline form-black mb-4">
 									<input type="password" id="password" class="form-control form-control-lg" placeholder="Password"/>
 								</div>
 							<% if (process.env.INVITE_ONLY == "true") { %>
-								<div class="form-outline form-white mb-4">
+								<div class="form-outline form-black mb-4">
 									<input type="password" id="invitecode" class="form-control form-control-lg" placeholder="Invite code"/>
 								</div>
 							<% } %>
@@ -46,7 +46,7 @@
 							</div>
 							<div>
 								<p class="mb-4">Already have an account?
-									<a href="/" class="text-white-50 fw-bold">
+									<a href="/" class="text-black-50 fw-bold">
 										Login
 									</a>
 								</p>

@@ -14,7 +14,7 @@
 	<div class="containers">
 		<div class="collum">
 			<!-- <div id="box"> -->
-				<canvas id="myChart" width="40" height="40"></canvas>
+				<canvas id="myChart" style="max-width: 662px; max-height: 662px"></canvas>
 			<!-- </div> -->
 		</div>
 		<div class="collum box">
@@ -34,16 +34,16 @@
 					<br>
 
 					<label for="Eiwitten">Eiwitten</label>
-					<input id="Eiwitten" type="Number" class="form-control" placeholder="0">
+					<input id="Eiwitten" step="5" type="Number" class="form-control" placeholder="0">
 					
-					<label for="Proteïnen">Proteïnen</label>
-					<input id="Proteinen" type="Number" class="form-control" placeholder="0">
+					<label for="Suiker">Suiker</label>
+					<input id="suiker" step="5" type="Number" class="form-control" placeholder="0">
 					
 					<label for="Koolhydraten">Koolhydraten</label>
-					<input id="Koolhydraten" type="Number" class="form-control" placeholder="0">
+					<input id="Koolhydraten" step="5" type="Number" class="form-control" placeholder="0">
 
 					<label for="Vet">Vet</label>
-					<input id="Vet" type="Number" class="form-control" placeholder="0">
+					<input id="Vet" step="5"type="Number" class="form-control" placeholder="0">
 				</div>
 				<!-- <br> -->
 				<!-- <button type="button" class="btn btn-primary">Update</button> -->
@@ -54,13 +54,13 @@
 	<script>
 
 		var eiwitten = [<%= eiwitten %>]
-		var proteinen = [<%= proteinen %>]
+		var suiker = [<%= suiker %>]
 		var koolhydraten = [<%= koolhydraten %>]
 		var vet = [<%= vet %>]
 
 		let soorten = [
 			"eiwitten",
-			"proteinen",
+			"suiker",
 			"koolhydraten",
 			"vet"
 		]
@@ -79,7 +79,7 @@
 			labels: Object.entries(days).map(day => day[0]),
 			datasets: [
 				{ label: 'Eiwitten', backgroundColor: 'rgb(255, 0, 255)', borderColor: 'rgb(255, 0, 255)', data: eiwitten }, 
-				{ label: 'Proteïnen', backgroundColor: 'rgb(255, 255, 132)', borderColor: 'rgb(255, 255, 132)', data: proteinen },
+				{ label: 'Suiker', backgroundColor: 'rgb(255, 255, 132)', borderColor: 'rgb(255, 255, 132)', data: suiker },
 				{ label: 'Koolhydraten', backgroundColor: 'rgb(255, 0, 0)', borderColor: 'rgb(255, 0, 0)', data: koolhydraten},
 				{ label: 'Vet', backgroundColor: 'rgb(1, 255, 0)', borderColor: 'rgb(1, 255, 0)', data: vet}
 			]
@@ -102,19 +102,21 @@
 			},
 		};
 		const ctx = document.getElementById('myChart').getContext('2d');
+		ctx.canvas.width = 300;
+		ctx.canvas.height = 300;
 		const myChart = new Chart(ctx, config);
 
 
 		function SetValue(number) {
 			$("#Eiwitten").val(eiwitten[number]);
-			$("#Proteinen").val(proteinen[number]);
+			$("#suiker").val(suiker[number]);
 			$("#Koolhydraten").val(koolhydraten[number]);
 			$("#Vet").val(vet[number]);
 		}
 		SetValue(0)
 
 		function updateServer(soort, array) {
-			console.log(soort, array)
+			//console.log(soort, array)
 			$.ajax({
 				url: '/user/update',
 				type: 'POST',
@@ -132,7 +134,7 @@
 		$('input').on('input', function() {
 			let values = [
 				$("#Eiwitten").val(),
-				$("#Proteinen").val(),
+				$("#suiker").val(),
 				$("#Koolhydraten").val(),
 				$("#Vet").val()
 			]

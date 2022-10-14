@@ -43,7 +43,7 @@ app.get('/dashboard', require('./middleware/jwt.middleware'), (req, res) => {
 		res.render('dashboard.html',  {
 			username: username,
 			vet: json.vet,
-			proteinen: json.proteinen,
+			suiker: json.suiker,
 			koolhydraten: json.koolhydraten,
 			eiwitten: json.eiwitten,
 		})
